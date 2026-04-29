@@ -1,0 +1,43 @@
+name: warsha
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^4.6.0
+  cloud_firestore: ^6.2.0
+  firebase_auth: ^6.4.0
+  shared_preferences: ^2.5.5
+  url_launcher: ^6.3.2
+  google_maps_flutter: ^2.17.0
+  image_picker: ^1.2.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.7
+
+flutter_native_splash:
+  color: "#F04D01"               # ✅ orange background
+  image: assets/warshaLogo.png   # ✅ your logo
+  fullscreen: true
+
+  android_12:
+    color: "#F04D01"
+    image: assets/warshaLogo.png dart run flutter_native_splash:create# ✅ removes status bar
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/Background.png
+    - assets/Background2.png
+    - assets/logo.png
+    - assets/warshaLogo.png

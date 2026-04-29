@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "620599519457",
+    "project_id": "warsha-98a36",
+    "storage_bucket": "warsha-98a36.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620599519457:android:dc528f41e56c1ac73d6fa0",
+        "android_client_info": {
+          "package_name": "com.example.warsha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCmKzvrggtun_Weg5rg_iyAYeyD3OJv-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
