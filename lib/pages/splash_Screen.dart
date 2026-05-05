@@ -3,7 +3,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warsha/pages/login_screen.dart';
 import 'package:warsha/pages/navigation_bar.dart';
-import 'package:warsha/pages/todo_Screen.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

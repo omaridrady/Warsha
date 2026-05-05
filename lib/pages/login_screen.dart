@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warsha/pages/forget_password.dart';
 import 'package:warsha/pages/home_page.dart';
 import 'package:warsha/pages/navigation_bar.dart';
-import 'package:warsha/pages/register_screen.dart';
+import 'package:warsha/pages/client_register_screen.dart';
 import 'package:warsha/pages/todo_Screen.dart';
 
 class LoginScreen extends StatefulWidget {

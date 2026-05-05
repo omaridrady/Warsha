@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:warsha/pages/home_page.dart';
 import 'package:warsha/pages/profile_Screen.dart';
 
-import 'chat_screen.dart';
+import 'warshati_screen.dart';
 
 class PagesNavigator extends StatefulWidget {
   PagesNavigator({super.key});
@@ -15,7 +15,7 @@ class _PagesNavigatorState extends State<PagesNavigator> {
   @override
 
   int _selectedIndex = 0;
-  final List<Widget> pages = [HomePage(), ChatScreen(), ProfileScreen()];
+  final List<Widget> pages = [HomePage(), Warshati(), ProfileScreen()];
   final List<IconData> icons = [
     Icons.home,
     Icons.chat,
@@ -58,7 +58,7 @@ class _PagesNavigatorState extends State<PagesNavigator> {
     padding: EdgeInsets.all(10),
     decoration: BoxDecoration(
     color: Colors.transparent,
-    borderRadius: BorderRadius.circular(20),
+
     ),
     child: Icon(
     icons[index],

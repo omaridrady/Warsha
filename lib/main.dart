@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:warsha/firebase_options.dart';
-import 'package:warsha/pages/register_screen.dart';
+import 'package:warsha/pages/client_register_screen.dart';
 import 'package:warsha/pages/splash_Screen.dart';
 
 Future<void> main() async {
@@ -14,6 +14,7 @@ Future<void> main() async {
   );
 
   runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: SplashScreen(), // This points to the class below
   ));
 }

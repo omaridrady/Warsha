@@ -6,9 +6,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:warsha/modules/clsUser.dart';
 import 'package:warsha/pages/login_screen.dart';
 import 'package:warsha/pages/navigation_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:warsha/services/user_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -31,6 +35,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _dateController = TextEditingController();
   final ImagePicker picker = ImagePicker();
 
   XFile? pickedImage;
@@ -64,24 +70,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: Column(
                                     children: [
                                       ListTile(
-                                        leading: Icon(Icons.camera_alt,),
+                                        leading: Icon(Icons.camera_alt),
                                         title: Text("Camera"),
-                                        onTap: ()  async {
-                                          pickedImage = await picker.pickImage(source: ImageSource.camera);
-                                          setState(()  {
-
-                                          });
-
+                                        onTap: () async {
+                                          pickedImage = await picker.pickImage(
+                                            source: ImageSource.camera,
+                                          );
+                                          setState(() {});
                                         },
                                       ),
                                       ListTile(
                                         leading: Icon(Icons.photo),
                                         title: Text("Gallery"),
                                         onTap: () async {
-                                          pickedImage = await picker.pickImage(source: ImageSource.gallery);
-                                          setState(()  {
-
-                                          });
+                                          pickedImage = await picker.pickImage(
+                                            source: ImageSource.gallery,
+                                          );
+                                          setState(() {});
                                         },
                                       ),
                                     ],
@@ -90,65 +95,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                             );
                           },
-                          icon: Icon(Icons.photo,size: 50,),
+                          icon: Icon(Icons.photo, size: 50),
                         ),
                       )
                     : Image.file(File(pickedImage!.path)),
                 const SizedBox(height: 30),
 
-                // Email Field
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: "Name",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter your Name";
-                    }
-                    return null;
-                  },
-                ),
+                _myTextField(_nameController, "Name", Icons.person),
+
                 const SizedBox(height: 20),
 
                 // Email Field
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.email),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter your email";
-                    } else if (!emailRegex.hasMatch(value)) {
-                      return "Enter a valid email address";
-                    }
-                    return null;
-                  },
-                ),
+                _myTextField(_emailController, "Email", Icons.mail),
                 const SizedBox(height: 20),
 
                 // Password Field
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: "Password",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
+                _myTextField(_passwordController, "Password", Icons.lock),
+
+                const SizedBox(height: 30),
+                _myTextField(_phoneController, "Phone", Icons.phone),
+                const SizedBox(height: 30),
+                TextField(
+                  controller: _dateController,
+                  readOnly: true, // Prevents keyboard from opening
+                  decoration: InputDecoration(
+                    labelText: "Birthdate",
+                    filled: true,
+                    prefixIcon: const Icon(
+                      Icons.calendar_today,
+                      color: Color(0xFFFF5A00),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xFFFF5A00),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter your password";
-                    } else if (!passRegex.hasMatch(value)) {
-                      return "Must be 8+ chars with letters & numbers";
-                    }
-                    return null;
-                  },
+                  onTap: () => _selectDate(context),
                 ),
 
                 const SizedBox(height: 30),
@@ -161,25 +150,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         UserCredential? userData;
-
-
+                        final SharedPreferences prefs = await SharedPreferences.getInstance();
                         try {
                           userData = await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
-                          if(pickedImage != null){
+                          prefs.setString("uid", userData.user!.uid);
+                          if (pickedImage != null) {
                             imgLink = await uplouadToCloudinary(pickedImage);
                           }
 
-                          FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(userData.user!.uid)
-                              .set({
-                                "Name": _nameController.text,
-                                "UserImage": imgLink,
-                              });
+                          clsUser newUser = clsUser(
+                            id: prefs.getString("uid"),
+                            name: _nameController.text,
+                            phone: _phoneController.text,
+                            role: "Client",
+                            birthdate: DateTime.parse(_dateController.text),
+                            profileImage: imgLink,
+                            createdAt: DateTime.now(),
+                          );
+
+                          UserService.addUser(newUser);
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -227,6 +220,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
   Future<String> uplouadToCloudinary(XFile? pickedImage) async {
     File myImage = File(pickedImage!.path);
     String cloudName = "dkepqbmf9";
@@ -250,4 +244,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
       throw Exception(decoded['error']['message']);
     }
   }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000), // Earliest year allowed
+      lastDate: DateTime(2100), // Latest year allowed
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFFFF5A00), // Using your brand orange
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        // Formats date to: 2026-05-05
+        _dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+  }
+}
+
+Widget _myTextField(
+  TextEditingController contorller,
+  String label,
+  IconData icon,
+) {
+  return TextFormField(
+    controller: contorller,
+    decoration: InputDecoration(
+      labelText: label,
+      border: OutlineInputBorder(),
+      prefixIcon: Icon(icon),
+    ),
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return "Please enter your ${label}";
+      }
+      return null;
+    },
+  );
 }
