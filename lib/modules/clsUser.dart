@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-clsUser userFromJson(String str) => clsUser.fromJson(json.decode(str));
+clsUser userFromJson(String str) => clsUser.fromJson(json.decode(str),"");
 
 String userToJson(clsUser data) => json.encode(data.toJson());
 
@@ -23,6 +23,7 @@ class clsUser {
   double? totalEarnings;
   bool? isAvailable;
   DateTime createdAt;
+  List <String>? portfolio;
 
   clsUser({
      this.id,
@@ -38,10 +39,11 @@ class clsUser {
     this.totalEarnings,
     this.isAvailable,
     required this.createdAt,
+    this.portfolio
   });
 
-  factory clsUser.fromJson(Map<String, dynamic> json) => clsUser(
-    id: json["id"],
+  factory clsUser.fromJson(Map<String, dynamic> json,String docId) => clsUser(
+    id : docId,
     name: json["name"],
     phone: json["phone"],
     role: json["role"],
@@ -56,11 +58,12 @@ class clsUser {
     totalEarnings: json["totalEarnings"]?.toDouble(),
     isAvailable: json["isAvailable"] ?? false,
     createdAt: DateTime.parse(json["createdAt"]),
+    portfolio: json["portfolio"] != null
+  ? List<String>.from(json["portfolio"]) : [],
   );
 
   Map<String, dynamic> toJson() {
     final data = {
-
       "name": name,
       "phone": phone,
       "role": role,
@@ -73,8 +76,12 @@ class clsUser {
       "totalEarnings": totalEarnings,
       "isAvailable": isAvailable,
       "createdAt": createdAt.toIso8601String(),
+      // FIX: Check if portfolio is null before mapping, otherwise return null
+      "portfolio": List<dynamic>.from((portfolio ?? []).map((x) => x)),
     };
-    data.removeWhere((key,value) => value == null);
+
+    // This safely removes all null keys so Firestore doesn't get empty/null fields
+    data.removeWhere((key, value) => value == null);
     return data;
   }
 }

@@ -59,13 +59,7 @@ final _emailController = TextEditingController();
                 const SizedBox(height: 20),
 
 
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text("Forget Password ?"),
-                  ),
-                ),
+
                 const SizedBox(height: 30),
 
                 // Login Button

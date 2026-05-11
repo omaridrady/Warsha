@@ -23,7 +23,7 @@ class UserService {
           .doc(id)
           .get();
       if (doc.exists && doc.data() != null) {
-        return clsUser.fromJson(doc.data()!);
+        return clsUser.fromJson(doc.data()!,doc.id);
       } else {
         print('User not found');
         return null;
