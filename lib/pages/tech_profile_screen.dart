@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:warsha/modules/clsUser.dart';
-import 'package:warsha/pages/login_screen.dart';
+import 'package:warsha/features/Auth/presentation/screens/login_screen.dart';
 import 'package:warsha/services/communication_service.dart';
 import 'package:warsha/services/user_service.dart'; // Assume you have a service to update user data
 import 'package:http/http.dart' as http;

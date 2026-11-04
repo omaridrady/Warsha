@@ -1,23 +1,40 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:warsha/features/Settings/Presentation/BloC/settings_bloc.dart';
+import 'package:warsha/features/Ticket/Presentation/bloc/ticket_bloc.dart';
 import 'package:warsha/firebase_options.dart';
-import 'package:warsha/pages/client_register_screen.dart';
-import 'package:warsha/pages/home_page.dart';
-import 'package:warsha/pages/splash_Screen.dart';
+import 'package:warsha/features/Auth/presentation/screens/client_register_screen.dart';
+import 'package:warsha/features/Ticket/Presentation/screens/home_page.dart';
+import 'package:warsha/features/Auth/presentation/screens/splash_Screen.dart';
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: SafeArea(child: SplashScreen()), // This points to the class below
-  ));
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SettingsBloc(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: SafeArea(child: SplashScreen()),
+      ),
+    );
+  }
 }
 
 // class MapSample extends StatefulWidget {
